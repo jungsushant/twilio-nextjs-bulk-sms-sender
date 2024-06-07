@@ -1,4 +1,5 @@
 import * as XLSX from 'xlsx';
+import PhoneNumberAdd from './utils/producer';
 type FileDataProps ={
   [index: number]: number | string;
 
@@ -95,6 +96,8 @@ export default function Home() {
         console.log(e.Phone);
         ActualData.push(e.Phone);
       })
+
+      await PhoneNumberAdd(ActualData);
     
   }
 
