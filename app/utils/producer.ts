@@ -9,11 +9,10 @@ const bulkSmsQueue = new Queue('bulk-sms-queue', { connection: {
 
 const PhoneNumberAdd = async (numbers:number[])=>{
     for(let i= 0;i<numbers.length;i++){
-        await bulkSmsQueue.add("number",{number:numbers[i]},{delay:5000})
-        console.log("This number is added to queue: ",numbers[i]);
+        await bulkSmsQueue.add("number",{number:numbers[i]},{attempts:3,backoff:{type:'exponential',delay:1000}})
     }
 
-myWorker.run();
+    if(!myWorker.isRunning()) myWorker.run();
 
 
 }

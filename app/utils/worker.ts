@@ -1,10 +1,12 @@
 import { Worker, Job } from 'bullmq';
-const accountSid ='';
+const accountSid ='AC';
 const authToken = '';
 const client = require('twilio')(accountSid, authToken);
 
 
 const smsBulkSend = async(job:Job)=>{
+    let i = 0;
+    console.log(job.data.number, "is being processed",i++);
     try {
         const number = await job.data.number; 
         var message = await client.messages.create({
@@ -20,13 +22,9 @@ const smsBulkSend = async(job:Job)=>{
 
 
 }
-export const myWorker = new Worker('bulk-sms-queue', smsBulkSend, {  connection: {
+export const myWorker = new Worker('bulk-sms-queue', smsBulkSend, {  limiter:{max:1,duration:2000},connection: {
     host: "127.0.0.1",
     port: 6379
   }});
 
   
-  myWorker.on('completed',()=>{
-      console.log("All messages are sent");
-      myWorker.disconnect();
-})
